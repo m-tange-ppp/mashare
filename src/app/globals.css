@@ -19,3 +19,44 @@ body {
   background: var(--background);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* KaTeX数式のスタイル調整 */
+.katex-container {
+  width: 100%;
+}
+
+/* 数式の位置調整 */
+.katex-display {
+  display: block !important;
+  margin: 0.5em 0;
+  text-align: center;
+}
+
+/* インラインモードの調整 */
+.katex {
+  text-rendering: auto;
+  font-size: 1.1em;
+  line-height: 1.5;
+}
+
+/* フォントのアンチエイリアシング */
+#math-output .katex * {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 画像保存用のスタイル */
+#math-output {
+  line-height: 1.5 !important;
+}
+
+#math-output .katex-html {
+  white-space: normal;
+}
+
+.katex-container p {
+  margin: 0.5em 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: break-word;
+}
