@@ -44,7 +44,7 @@ export function MathExamples({ onSelect }: MathExampleProps) {
     },
     {
       title: "不等号",
-      formula: "\\leq, \\geq, \\neq",
+      formula: "\\leqq, \\geqq, \\neq",
     },
     {
       title: "ギリシャ文字",

@@ -17,23 +17,38 @@ export default function Home() {
   const [renderedMath, setRenderedMath] = useState("");
   const [cursorPosition, setCursorPosition] = useState({ start: 0, end: 0 });
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
-  const [isDarkImage, setIsDarkImage] = useState(
-    window.matchMedia("(prefers-color-scheme: dark)").matches
-  );
+  const [isDarkImage, setIsDarkImage] = useState(false);
+
+  // システムのダークモード設定を検出
+  useEffect(() => {
+    setIsDarkImage(window.matchMedia("(prefers-color-scheme: dark)").matches);
+  }, []);
 
   // 入力が変更されるたびに数式をレンダリング
   useEffect(() => {
     try {
       const lines = mathInput.split("\\\\");
       const renderedLines = lines.map((line) => {
+        // 入力をサニタイズ
+        const sanitizedLine = line.trim().replace(/[&"']/g, (char) => {
+          const entities: { [key: string]: string } = {
+            "&": "&amp;",
+            '"': "&quot;",
+            "'": "&#x27;",
+          };
+          return entities[char];
+        });
+
         const hasJapaneseText =
           /[\u3000-\u303f\u3040-\u309f\u30a0-\u30ff\u4e00-\u9faf\u3400-\u4dbf]/.test(
-            line
+            sanitizedLine
           );
-        return katex.renderToString(line.trim(), {
+
+        return katex.renderToString(sanitizedLine, {
           displayMode: !hasJapaneseText,
           throwOnError: false,
-          strict: false, // LaTeXの厳密なチェックを無効化
+          strict: false,
+          trust: false, // KaTeXのセキュリティ設定を有効化
         });
       });
       setRenderedMath(renderedLines.join("<br />"));
