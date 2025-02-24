@@ -3,12 +3,12 @@
 import "katex/dist/katex.min.css";
 import { useState, useEffect } from "react";
 import katex from "katex";
-import * as htmlToImage from "html-to-image";
 import { MathInput } from "@/components/MathInput";
 import { MathPreview } from "@/components/MathPreview";
 import { SaveImageButton } from "@/components/SaveImageButton";
 import { MathExamples } from "@/components/MathExamples";
-import Image from "next/image";
+import { ImagePreviewModal } from "@/components/ImagePreviewModal";
+import { generateMathImage } from "@/utils/imageGenerator";
 
 export default function Home() {
   const [mathInput, setMathInput] = useState(
@@ -17,6 +17,9 @@ export default function Home() {
   const [renderedMath, setRenderedMath] = useState("");
   const [cursorPosition, setCursorPosition] = useState({ start: 0, end: 0 });
   const [generatedImage, setGeneratedImage] = useState<string | null>(null);
+  const [isDarkImage, setIsDarkImage] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches
+  );
 
   // 入力が変更されるたびに数式をレンダリング
   useEffect(() => {
@@ -39,40 +42,13 @@ export default function Home() {
     }
   }, [mathInput]);
 
-  const handleSaveImage = async () => {
+  const handleSaveImage = async (forceDark?: boolean) => {
     const element = document.getElementById("math-output");
     if (!element || !mathInput) return;
 
     try {
-      const computedStyle = window.getComputedStyle(element);
-
-      const dataUrl = await htmlToImage.toPng(element, {
-        quality: 1.0,
-        pixelRatio: 2,
-        backgroundColor: computedStyle.backgroundColor,
-        style: {
-          transform: "none",
-          margin: "0",
-          padding: computedStyle.padding,
-          color: computedStyle.color,
-          borderRadius: computedStyle.borderRadius,
-          border: computedStyle.border,
-        },
-        filter: (node) => {
-          if (
-            node instanceof HTMLElement &&
-            (node.classList.contains("katex") ||
-              node.classList.contains("katex-html") ||
-              node.classList.contains("katex-display"))
-          ) {
-            const style = window.getComputedStyle(node);
-            node.style.color = style.color;
-            return true;
-          }
-          return true;
-        },
-      });
-
+      const isDark = forceDark ?? isDarkImage;
+      const dataUrl = await generateMathImage(element, isDark);
       setGeneratedImage(dataUrl);
     } catch (e) {
       console.error("画像の生成に失敗しました:", e);
@@ -120,45 +96,17 @@ export default function Home() {
           </div>
           <MathPreview html={renderedMath} />
 
-          {/* 生成された画像のプレビュー */}
           {generatedImage && (
-            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-              <div className="bg-gray-100 dark:bg-gray-900 rounded-lg p-4 max-w-2xl w-full">
-                <div className="flex justify-between items-center mb-4">
-                  <h3 className="text-lg font-medium">生成された画像</h3>
-                  <button
-                    onClick={() => setGeneratedImage(null)}
-                    className="text-gray-500 hover:text-gray-700"
-                  >
-                    ✕
-                  </button>
-                </div>
-                <div className="relative w-full h-[400px]">
-                  <p className="text-sm">※長押しで保存できます</p>
-                  <Image
-                    src={generatedImage}
-                    alt="Generated Math"
-                    fill
-                    className="object-contain"
-                    unoptimized
-                  />
-                </div>
-                <div className="mt-4 flex justify-end space-x-2">
-                  <button
-                    onClick={handleDownload}
-                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                  >
-                    ダウンロード
-                  </button>
-                  <button
-                    onClick={() => setGeneratedImage(null)}
-                    className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
-                  >
-                    閉じる
-                  </button>
-                </div>
-              </div>
-            </div>
+            <ImagePreviewModal
+              imageUrl={generatedImage}
+              isDark={isDarkImage}
+              onClose={() => setGeneratedImage(null)}
+              onDownload={handleDownload}
+              onToggleMode={() => {
+                setIsDarkImage(!isDarkImage);
+                handleSaveImage(!isDarkImage);
+              }}
+            />
           )}
         </div>
       </div>
