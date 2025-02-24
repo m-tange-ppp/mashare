@@ -42,15 +42,21 @@ export default function Home() {
     if (!element || !mathInput) return;
 
     try {
+      // 現在の要素のスタイルを取得
+      const computedStyle = window.getComputedStyle(element);
+
       // 高品質な画像を生成
       const dataUrl = await htmlToImage.toPng(element, {
         quality: 1.0,
         pixelRatio: 2,
-        backgroundColor: "white",
+        backgroundColor: computedStyle.backgroundColor,
         style: {
-          transform: "none", // 変換をリセット
+          transform: "none",
           margin: "0",
-          padding: "1rem",
+          padding: computedStyle.padding,
+          color: computedStyle.color,
+          borderRadius: computedStyle.borderRadius,
+          border: computedStyle.border,
         },
         filter: (node) => {
           // KaTeX関連の要素のスタイルを保持
@@ -60,6 +66,9 @@ export default function Home() {
               node.classList.contains("katex-html") ||
               node.classList.contains("katex-display"))
           ) {
+            // 現在の表示スタイルを保持
+            const style = window.getComputedStyle(node);
+            node.style.color = style.color;
             return true;
           }
           return true;
