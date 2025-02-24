@@ -24,7 +24,7 @@ export function MathExamples({ onSelect }: MathExampleProps) {
     },
     {
       title: "三角関数",
-      formula: "\\sin x, \\cos x, \\tan x",
+      formula: "\\sin x, \\cos x",
     },
     {
       title: "順列組合せ",
@@ -57,15 +57,15 @@ export function MathExamples({ onSelect }: MathExampleProps) {
   ];
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
+    <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
       {examples.map((example) => (
         <button
           key={example.title}
           onClick={() => onSelect(example.formula)}
-          className="border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 text-left transition-colors p-2"
+          className="border rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
         >
           <div
-            className="katex-container"
+            className="scale-75 transform md:scale-100"
             dangerouslySetInnerHTML={{
               __html: katex.renderToString(example.formula, {
                 displayMode: true,

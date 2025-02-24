@@ -1,6 +1,5 @@
 "use client";
 
-// KaTeXのスタイルをglobal.cssの後に読み込む
 import "katex/dist/katex.min.css";
 import { useState, useEffect } from "react";
 import katex from "katex";
@@ -84,28 +83,31 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen p-8">
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 p-4">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-2xl font-bold text-center">数式共有アプリ</h1>
-        <h2 className="text-center mb-4">～綺麗な数式を画像で共有しよう～</h2>
+        <h1 className="text-3xl font-bold text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-cyan-500">
+          MaShare
+        </h1>
+        <h2 className="text-center text-gray-600 dark:text-gray-400 mb-4">
+          ～綺麗な数式を画像で共有しよう～
+        </h2>
 
-        <div className="space-y-8">
+        <div className="space-y-4">
           <div>
-            <h2 className="font-semibold mb-2">数式の例</h2>
+            <h2 className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+              数式の例
+            </h2>
             <MathExamples onSelect={handleInsert} />
           </div>
-
-          <div className="space-y-4">
-            <MathInput
-              value={mathInput}
-              onChange={setMathInput}
-              onInsert={setCursorPosition}
-            />
-            <div className="flex justify-center">
-              <SaveImageButton onSave={handleSaveImage} />
-            </div>
-            <MathPreview html={renderedMath} />
+          <MathInput
+            value={mathInput}
+            onChange={setMathInput}
+            onInsert={setCursorPosition}
+          />
+          <div className="flex justify-center">
+            <SaveImageButton onSave={handleSaveImage} />
           </div>
+          <MathPreview html={renderedMath} />
         </div>
       </div>
     </main>

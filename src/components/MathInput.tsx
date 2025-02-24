@@ -45,19 +45,27 @@ export function MathInput({ value, onChange, onInsert }: MathInputProps) {
   }, [value, onInsert]);
 
   return (
-    <div>
-      <label className="block text-sm font-medium mb-2">
-        LaTeX形式で数式を入力
-      </label>
-      <textarea
-        ref={textareaRef}
-        value={value}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-        onMouseUp={() => {}}
-        className="w-full h-32 p-3 border rounded-lg text-black"
-        placeholder="LaTeX形式で数式を入力してください"
-      />
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm">
+      <div className="p-2">
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+          LaTeX形式で数式を入力
+        </label>
+        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+          ※自動で折り返さないので改行してください
+        </p>
+        <textarea
+          ref={textareaRef}
+          value={value}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+          onMouseUp={() => {}}
+          className="w-full h-32 p-4 border border-gray-200 dark:border-gray-700 rounded-lg 
+                   text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-900
+                   focus:ring-2 focus:ring-blue-500 focus:border-transparent
+                   transition-colors"
+          placeholder="LaTeX形式で数式を入力してください"
+        />
+      </div>
     </div>
   );
 }
