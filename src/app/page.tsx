@@ -134,6 +134,7 @@ export default function Home() {
                   </button>
                 </div>
                 <div className="relative w-full h-[400px]">
+                  <p className="text-sm">※長押しで保存できます</p>
                   <Image
                     src={generatedImage}
                     alt="Generated Math"
